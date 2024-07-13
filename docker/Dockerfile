@@ -68,13 +68,11 @@ RUN   git clone https://ceres-solver.googlesource.com/ceres-solver && \
 
 
 # Copy VINS-Fusion
-# COPY ./ $CATKIN_WS/src/VINS-Fusion/
+COPY ./ $CATKIN_WS/src/VINS-Fusion/
 # use the following line if you only have this dockerfile
 
 # Build VINS-Fusion
-RUN   mkdir -p ${CATKIN_WS}/src && cd ${CATKIN_WS}/src && \
-      git clone https://github.com/ParsaKhaledi/VINS-Fusion-ROS2.git && \
-      cd .. && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
+RUN   cd $CATKIN_WS && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
 
 RUN   echo "$WORKDIR/install/setup.bash" >> ~/.bashrc &&\
       rm -rf /var/lib/apt/lists/*
