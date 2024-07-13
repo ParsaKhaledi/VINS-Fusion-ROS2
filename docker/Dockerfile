@@ -15,7 +15,7 @@ WORKDIR $WS
 RUN   apt update && apt install -y --no-install-recommends \
       cmake git wget unzip python3-pip libboost-all-dev libopencv-dev \ 
       cmake-data build-essential libgflags-dev libgoogle-glog-dev \
-      protobuf-compiler libprotobuf-dev \
+      protobuf-compiler libprotobuf-dev cuda-toolkit \
       ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-image-transport \
       ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf* \
       ros-${ROS_DISTRO}-rqt*            ros-${ROS_DISTRO}-rviz* \
@@ -86,7 +86,7 @@ RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
 COPY  ../ ${WS}/src/VINS-Fusion-ROS2
 
 # Build VINS-Fusion
-RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
+RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --packages-skip loop_fusion
 
 RUN   echo "${WS}/install/setup.bash" >> ~/.bashrc &&\
       rm -rf /var/lib/apt/lists/*
