@@ -82,8 +82,11 @@ RUN   cd ${WS} &&\
 #       ../opencv && make -j4 VERBOSE=1 && make test && make install 
 
 # Copy VINS-Fusion
-RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
-COPY  ../ ${WS}/src/VINS-Fusion-ROS2
+# RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
+# COPY  ../ ${WS}/src/VINS-Fusion-ROS2
+RUN   mkdir -p ${WS}/src/
+RUN   cd ${WS}/src && git clone https://github.com/zinuok/VINS-Fusion-ROS2.git &&  \
+      git checkout b02d4154e3d72fcd674f62a6347770cfc546fe48
 
 # Build VINS-Fusion
 RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --packages-skip loop_fusion
