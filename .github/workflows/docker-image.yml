@@ -49,5 +49,5 @@ jobs:
       #     # labels: ${{ steps.meta.outputs.labels }}
       - name: Build and Push docker image
         id: build-and-push
-        uses: actions/checkout@v2
+        # uses: actions/checkout@v2
         run: docker build --file ./docker/Dockerfile --tag ${{ env.Registery }}/${{ env.ImageName }}:${{ env.ImageTag }}
