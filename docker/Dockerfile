@@ -3,20 +3,22 @@ FROM ros:humble-ros-base
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_DISTRO=humble
 ENV CERES_VERSION="2.1.0"
-ENV CATKIN_WS=/catkin_ws
+ENV WS=/ws_vins-fusion-ros2
 ENV TERM xterm
 ENV PYTHONIOENCODING UTF-8
 
-WORKDIR $CATKIN_WS
+WORKDIR $WS
 
       # set up thread number for building
 RUN   apt update && apt install -y --no-install-recommends \
-      cmake git wget unzip nvidia-cuda-toolkit \ 
-      python3-dev python3-numpy python3-py python3-pytest\
+      cmake git wget unzip python3-distutils libboost-all-dev libopencv-dev \ 
       cmake-data build-essential \
-      ros-${ROS_DISTRO}-cv-bridge ros-${ROS_DISTRO}-image-transport\
+      ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-image-transport \
       ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf* \
-      ros-${ROS_DISTRO}-rqt* ros-${ROS_DISTRO}-rviz* 
+      ros-${ROS_DISTRO}-rqt*            ros-${ROS_DISTRO}-rviz* \
+	ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-tf2 \
+      ros-${ROS_DISTRO}-tf2-ros         ros-${ROS_DISTRO}-image-transport     &&\
+      pip3 install numpy opencv-python==3.4.18.65 colcon-ros pytest==5.3
       # libatlas-base-dev \
       # libeigen3-dev \
       # libgoogle-glog-dev \
@@ -36,14 +38,24 @@ RUN   apt update && apt install -y --no-install-recommends \
       # libgtk2.0-dev \
       # pkg-config
       
-      # Build and install Ceres
-RUN   git clone https://ceres-solver.googlesource.com/ceres-solver && \
-      cd ceres-solver && \
-      git checkout tags/${CERES_VERSION} && \
-      mkdir build && cd build && \
-      cmake .. && \
-      make -j$(USE_PROC) install && \
-      rm -rf ../../ceres-solver 
+#Install Eigen
+RUN	cd ${WS} &&\
+      wget -O eigen-3.3.9.zip https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.zip  &&\
+	unzip eigen-3.3.9.zip &&\
+	cd eigen-3.3.9 && mkdir build && cd build &&\
+	cmake ../ && sudo make install -j $(nproc) &&\
+	cd ${WS} && rm -rf eigen-3.3.9.zip eigen-3.3.9
+
+# Install Ceres
+RUN   cd ${WS} &&\
+      wget http://ceres-solver.org/ceres-solver-2.1.0.tar.gz &&\
+      tar zxf ceres-solver-2.1.0.tar.gz &&\
+      cd ceres-solver-2.1.0 &&\
+      mkdir build && cd build &&\
+      cmake -DEXPORT_BUILD_DIR=ON \
+      -DCMAKE_INSTALL_PREFIX=/usr/local \
+      ../ && make -j$(nproc) && make install -j $(nproc) &&\	 
+      cd ../ && rm -rf ceres-solver-2.1.0.tar.gz ceres-solver-2.1.0
 
 # RUN   mkdir -p /opencv_dir && cd opencv_dir && \
 #       git clone git clone https://github.com/opencv/opencv.git -b v3.4.1 && \
@@ -66,14 +78,12 @@ RUN   git clone https://ceres-solver.googlesource.com/ceres-solver && \
 #       -DOPENCV_TEST_DATA_PATH=../opencv_extra/testdata \
 #       ../opencv && make -j4 VERBOSE=1 && make test && make install 
 
-
 # Copy VINS-Fusion
-COPY ./ $CATKIN_WS/src/VINS-Fusion/
-# use the following line if you only have this dockerfile
+COPY VINS-Fusion-ROS2/ ${WS}/src/VINS-Fusion-ROS2
 
 # Build VINS-Fusion
-RUN   cd $CATKIN_WS && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
+RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
 
-RUN   echo "$WORKDIR/install/setup.bash" >> ~/.bashrc &&\
+RUN   echo "${WS}/install/setup.bash" >> ~/.bashrc &&\
       rm -rf /var/lib/apt/lists/*
 

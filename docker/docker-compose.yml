@@ -1,0 +1,135 @@
+version: '3.6'
+
+services:
+  # roscore:
+  #   image: mins:v3
+  #   network_mode: "host"
+  #   restart: always
+  #   command: /bin/bash -c " \
+  #     source /opt/ros/noetic/setup.bash && \
+  #     roscore"
+
+  oak:
+    image: luxonis/depthai-ros:humble-latest
+    tty: true
+    privileged: true
+    restart: unless-stopped
+    network_mode: "host"
+    # networks:
+    #   mins:
+    #     ipv4_address: "10.20.10.2"
+    # depends_on:
+      # - roscore
+    environment:
+      DISPLAY: ${DISPLAY}
+      "XAUTHORITY": ${XAUTH}
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix/
+      - /dev:/dev/
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+
+    command: /bin/bash -c "
+      ros2 launch depthai_examples stereo_inertial_node.launch.py \
+      enableRviz:=false stereo_fps:=30 syncNN:=false \
+      enableSpatialDetection:=false depth_aligned:=false \
+      /stereo_inertial_publisher/imu:=/imu/data_raw"
+
+  # ublox:
+  #   image: "ublox_ros1:v1"
+  #   privileged: true
+  #   restart: unless-stopped
+  #   network_mode: "host"
+  #   # networks:
+  #   #   mins:
+  #   #     ipv4_address: "10.20.10.3"
+  #   depends_on:
+  #     # - roscore
+  #     - oak
+  #   # environment:
+  #   #   DISPLAY: ${DISPLAY}
+  #   #   "XAUTHORITY": ${XAUTH}
+  #   volumes:
+  #     # - /tmp/.X11-unix/:/tmp/.X11-unix/
+  #     # - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+  #     # - ~/ws_docker/ws_mins/ROS2_simulator/.ros:/root/.ros
+  #     - /dev/:/dev/
+  #     - ~/ws_docker/ws_ublox/:/ws_ublox/
+  #   command: /bin/bash -c "
+  #     roslaunch ublox_gps ublox_device.launch param_file_name:=m8u_rover node_name:=gps"
+
+  rviz:
+    image: vins-fusion-ros2:v3
+    tty: true
+    restart: unless-stopped
+    network_mode: "host"
+    # networks:
+    #   mins:
+    #     ipv4_address: "10.20.10.4"
+    depends_on:
+      # - roscore
+      - oak
+      # - mins
+    environment:
+      DISPLAY: ${DISPLAY}
+      "XAUTHORITY": ${XAUTH}
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix/
+      - ~/ws_docker/ws_mins/:/ws_mins/
+    command: /bin/bash -c "
+      source /opt/ros/humble/setup.bash && \
+      rviz -d /ws_vins-fusion-ros2/src/VINS-Fusion-ROS2/config/vins_rviz_config.rviz"
+
+  rqt:
+    image: mins:v3
+    tty: true
+    network_mode: "host"
+    # networks:
+    #   mins:
+    #     ipv4_address: "10.20.10.5"
+    # restart: unless-stopped
+    depends_on:
+      # - roscore
+      - oak
+      # - mins
+    environment:
+      DISPLAY: ${DISPLAY}
+      "XAUTHORITY": ${XAUTH}
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix/
+      - /home/user/ws_docker/github/ws_vins-fusion-ros2/:/ws_vins-fusion-ros2/
+    command: /bin/bash -c "
+      source /opt/ros/humble/setup.bash && rqt"
+
+  vins-fusion:
+    image: vins-fusion-ros2:v31
+    tty: true
+    network_mode: "host"
+    depends_on:
+      # - roscore
+      - oak
+      # - ublox
+    # networks:
+    #   mins:
+    #     ipv4_address: "10.20.10.6"
+    restart: unless-stopped
+    environment:
+      DISPLAY: ${DISPLAY}
+      "XAUTHORITY": ${XAUTH}
+
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix/ 
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+      - /home/user/ws_docker/github/ws_vins-fusion-ros2/:/ws_vins-fusion-ros2/
+    command: /bin/bash -c "
+      source /opt/ros/humble/setup.bash && cd /ws_mins/ && \
+      if [ ! -d '/ws_vins-fusion-ros2/install' ]; then \
+      colcon build; fi && source /ws_vins-fusion-ros2/install/setup.bash && \
+      ros2 run vins /ws_vins-fusion-ros2/src/VINS-Fusion-ROS2/config/oak-D/oak-D.yaml"
+
+
+# networks:
+#   mins:
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: "10.20.10.0/24"
