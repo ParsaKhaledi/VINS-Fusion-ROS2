@@ -20,6 +20,11 @@ jobs:
       contents: read
       packages: write
       id-token: write
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
 
     steps:
       # - name: setup Docker buildx
