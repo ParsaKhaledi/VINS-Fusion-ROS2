@@ -1,7 +1,7 @@
-FROM ros:humble-ros-desktop
+FROM ros:humble-ros-base
 
 ENV CERES_VERSION="2.1.0"
-ENV CATKIN_WS=/root/catkin_ws
+ENV CATKIN_WS=/catkin_ws
 
       # set up thread number for building
 RUN   if [ "x$(nproc)" = "x1" ] ; then export USE_PROC=1 ; \
@@ -10,10 +10,9 @@ RUN   if [ "x$(nproc)" = "x1" ] ; then export USE_PROC=1 ; \
       cmake git wget unzip nvidia-cuda-toolkit \
       python3-dev python3-numpy python3-py python3-pytest\
       cmake-data build-essential \
-      ros-${ROS_DISTRO}-cv-bridge \
-      ros-${ROS_DISTRO}-image-transport \
-      ros-${ROS_DISTRO}-message-filters \
-      ros-${ROS_DISTRO}-tf \
+      ros-${ROS_DISTRO}-cv-bridge ros-${ROS_DISTRO}-image-transport\
+      ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf \
+      ros-${ROS_DISTRO}-rqt* ros-${ROS_DISTRO}-rviz* \
       libatlas-base-dev \
       libeigen3-dev \
       libgoogle-glog-dev \
@@ -83,4 +82,4 @@ RUN catkin config \
     sed -i '/exec "$@"/i \
             source "/root/catkin_ws/devel/setup.bash"' /ros_entrypoint.sh
 
-            # rm -rf /var/lib/apt/lists/* && \
+RUN rm -rf /var/lib/apt/lists/* 
