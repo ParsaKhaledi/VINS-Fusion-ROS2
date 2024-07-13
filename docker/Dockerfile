@@ -1,5 +1,7 @@
 FROM ros:humble-ros-base
 
+SHELL ["/bin/bash", "-c"]
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_DISTRO=humble
 ENV CERES_VERSION="2.1.0"
