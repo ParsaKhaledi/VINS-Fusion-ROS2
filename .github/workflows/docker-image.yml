@@ -50,4 +50,4 @@ jobs:
       - name: Build and Push docker image
         id: build-and-push
         # uses: actions/checkout@v2
-        run: docker build --file ./docker/Dockerfile USERNAME=${{ secrets.DOCKER_USERNAME }} PASSWORD=${{ secrets.DOCKER_PASSWORD }}  --tag ${{ env.Registery }}/${{ env.ImageName }}:${{ env.ImageTag }}
+        run: docker build --file ./docker/Dockerfile USERNAME=${{ secrets.DOCKER_USERNAME }} PASSWORD=${{ secrets.DOCKER_PASSWORD }}  --tag ${{ env.Registery }}/${{ env.ImageName }}:${{ env.ImageTag }} .
