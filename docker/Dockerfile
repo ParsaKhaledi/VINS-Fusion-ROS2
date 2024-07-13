@@ -15,7 +15,7 @@ WORKDIR $WS
 RUN   apt update && apt install -y --no-install-recommends \
       cmake git wget unzip python3-pip libboost-all-dev libopencv-dev \ 
       cmake-data build-essential libgflags-dev libgoogle-glog-dev \
-      protobuf-compiler libprotobuf-dev cuda-toolkit \
+      protobuf-compiler libprotobuf-dev \
       ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-image-transport \
       ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf* \
       ros-${ROS_DISTRO}-rqt*            ros-${ROS_DISTRO}-rviz* \
