@@ -79,7 +79,7 @@ RUN   cd ${WS} &&\
 #       ../opencv && make -j4 VERBOSE=1 && make test && make install 
 
 # Copy VINS-Fusion
-COPY VINS-Fusion-ROS2/ ${WS}/src/VINS-Fusion-ROS2
+COPY ./ ${WS}/src/VINS-Fusion-ROS2
 
 # Build VINS-Fusion
 RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
