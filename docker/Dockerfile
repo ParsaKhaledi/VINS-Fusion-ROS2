@@ -1,27 +1,27 @@
 FROM ros:humble-ros-base
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ROS_DISTRO=humble
 ENV CERES_VERSION="2.1.0"
 ENV CATKIN_WS=/catkin_ws
 
       # set up thread number for building
-RUN   apt update && apt install -y apt-transport-https\
-      cmake git wget unzip nvidia-cuda-toolkit \
+RUN   apt update && apt install -y --no-install-recommends \
+      cmake git wget unzip nvidia-cuda-toolkit \ 
       python3-dev python3-numpy python3-py python3-pytest\
       cmake-data build-essential \
       ros-${ROS_DISTRO}-cv-bridge ros-${ROS_DISTRO}-image-transport\
-      ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf \
+      ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf* \
       ros-${ROS_DISTRO}-rqt* ros-${ROS_DISTRO}-rviz* \
       libatlas-base-dev \
       libeigen3-dev \
       libgoogle-glog-dev \
       libsuitesparse-dev \
-      python3-catkin-tools \
       libglew-dev \
       libtiff5-dev \
       zlib1g-dev \
       libjpeg-dev \
-      libpng12-dev \
-      libjasper-dev \
+      libpng-dev \
       libavcodec-dev \
       libavformat-dev \
       libavutil-dev \
