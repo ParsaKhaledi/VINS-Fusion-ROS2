@@ -1,9 +1,9 @@
-FROM ros:humble-ros-base
+FROM ros:foxy-ros-base
 
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV ROS_DISTRO=humble
+ENV ROS_DISTRO=foxy
 ENV CERES_VERSION="2.1.0"
 ENV WS=/ws_vins-fusion-ros2
 ENV TERM xterm
