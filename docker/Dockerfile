@@ -11,8 +11,8 @@ WORKDIR $WS
 
       # set up thread number for building
 RUN   apt update && apt install -y --no-install-recommends \
-      cmake git wget unzip python3-distutils libboost-all-dev libopencv-dev \ 
-      cmake-data build-essential \
+      cmake git wget unzip python3-pip libboost-all-dev libopencv-dev \ 
+      cmake-data build-essential  \
       ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-image-transport \
       ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf* \
       ros-${ROS_DISTRO}-rqt*            ros-${ROS_DISTRO}-rviz* \
@@ -36,7 +36,7 @@ RUN   apt update && apt install -y --no-install-recommends \
       # libeigen3-dev \
       # libtbb-dev \
       # libgtk2.0-dev \
-      # pkg-config
+      # pkg-config python3-distutils
       
 #Install Eigen
 RUN	cd ${WS} &&\
@@ -79,7 +79,8 @@ RUN   cd ${WS} &&\
 #       ../opencv && make -j4 VERBOSE=1 && make test && make install 
 
 # Copy VINS-Fusion
-COPY ./ ${WS}/src/VINS-Fusion-ROS2
+RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
+COPY  ../ ${WS}/src/VINS-Fusion-ROS2
 
 # Build VINS-Fusion
 RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
