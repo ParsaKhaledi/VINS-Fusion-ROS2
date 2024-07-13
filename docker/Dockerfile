@@ -60,7 +60,7 @@ RUN   mkdir -p /opencv_dir && cd opencv_dir && \
       -DWITH_OPENEXR=OFF \
       -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-8.0 \
       -DOPENCV_TEST_DATA_PATH=../opencv_extra/testdata \
-      ../opencv && make -j6 VERBOSE=1 && make test && make install 
+      ../opencv && make -j4 VERBOSE=1 && make test && make install 
 
 
 # Copy VINS-Fusion
