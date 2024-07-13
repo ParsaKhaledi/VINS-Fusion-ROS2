@@ -41,6 +41,6 @@ jobs:
           push: true
           file: ./docker/Dockerfile
           tags:   ${{ env.Registery }}/${{ env.ImageName }}:${{ env.ImageTag }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          # username: ${{ secrets.DOCKER_USERNAME }}
+          # password: ${{ secrets.DOCKER_PASSWORD }}
           # labels: ${{ steps.meta.outputs.labels }}
