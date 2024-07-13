@@ -4,7 +4,7 @@ ENV CERES_VERSION="2.1.0"
 ENV CATKIN_WS=/catkin_ws
 
       # set up thread number for building
-RUN   apt update && apt install -y \
+RUN   apt update && apt install -y apt-transport-https\
       cmake git wget unzip nvidia-cuda-toolkit \
       python3-dev python3-numpy python3-py python3-pytest\
       cmake-data build-essential \
