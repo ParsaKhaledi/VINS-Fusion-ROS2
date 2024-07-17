@@ -18,7 +18,7 @@ RUN   apt update && apt install -y --no-install-recommends \
       protobuf-compiler libprotobuf-dev \
       ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-image-transport \
       ros-${ROS_DISTRO}-message-filters ros-${ROS_DISTRO}-tf* \
-      ros-${ROS_DISTRO}-rqt*            ros-${ROS_DISTRO}-rviz* \
+      ros-${ROS_DISTRO}-rqt*            ros-${ROS_DISTRO}-rviz \
 	ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-tf2 \
       ros-${ROS_DISTRO}-tf2-ros         ros-${ROS_DISTRO}-image-transport     &&\
       pip3 install numpy opencv-python==3.4.18.65 colcon-ros pytest==5.3
