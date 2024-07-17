@@ -8,7 +8,7 @@ on:
 
 env:
   Registery: docker.io
-  ImageName: alienkh/vin-fusion-ros2
+  ImageName: alienkh/vins-fusion-ros2
   ImageTag: 1.${{ github.run_number }}
 
 jobs:
