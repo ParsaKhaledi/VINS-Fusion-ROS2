@@ -10,14 +10,14 @@ services:
   #     roscore"
 
   oak:
-    image: luxonis/depthai-ros:humble-latest
+    image: "luxonis/depthai-ros:${luxonisImageTag:?error}"
     tty: true
     privileged: true
     restart: unless-stopped
-    network_mode: "host"
-    # networks:
-    #   mins:
-    #     ipv4_address: "10.20.10.2"
+    # network_mode: "host"
+    networks:
+      vins:
+        ipv4_address: "10.20.12.2"
     # depends_on:
       # - roscore
     environment:
@@ -31,7 +31,7 @@ services:
     command: /bin/bash -c "
       ros2 launch depthai_examples stereo_inertial_node.launch.py \
       enableRviz:=false stereo_fps:=30 syncNN:=false \
-      enableSpatialDetection:=false depth_aligned:=false #\
+      enableSpatialDetection:=false depth_aligned:=false " #\
       # /stereo_inertial_publisher/imu:=/imu/data_raw"
 
   # ublox:
@@ -58,13 +58,13 @@ services:
   #     roslaunch ublox_gps ublox_device.launch param_file_name:=m8u_rover node_name:=gps"
 
   rviz:
-    image: alienkh/vin-fusion-ros2:v3
+    image: "alienkh/vins-fusion-ros2:${VinsFusionRosTag:?error}"
     tty: true
     restart: unless-stopped
     network_mode: "host"
     # networks:
     #   mins:
-    #     ipv4_address: "10.20.10.4"
+    #     ipv4_address: "10.20.12.4"
     depends_on:
       # - roscore
       - oak
@@ -74,19 +74,19 @@ services:
       "XAUTHORITY": ${XAUTH}
     volumes:
       - /tmp/.X11-unix/:/tmp/.X11-unix/
-      - ~/ws_docker/ws_mins/:/ws_mins/
+      - /home/alien/docker_ws/github/ws_vins-fusion-ros2/:/ws_vins-fusion-ros2/
     command: /bin/bash -c "
-      source /opt/ros/humble/setup.bash && \
+      source /opt/ros/foxy/setup.bash && \
       rviz -d /ws_vins-fusion-ros2/src/VINS-Fusion-ROS2/config/vins_rviz_config.rviz"
 
   rqt:
-    image: mins:v3
+    image: "alienkh/vins-fusion-ros2:${VinsFusionRosTag:?error}"
     tty: true
-    network_mode: "host"
-    # networks:
-    #   mins:
-    #     ipv4_address: "10.20.10.5"
-    # restart: unless-stopped
+    # network_mode: "host"
+    networks:
+      vins:
+        ipv4_address: "10.20.12.5"
+    restart: unless-stopped
     depends_on:
       # - roscore
       - oak
@@ -96,21 +96,21 @@ services:
       "XAUTHORITY": ${XAUTH}
     volumes:
       - /tmp/.X11-unix/:/tmp/.X11-unix/
-      - /home/user/ws_docker/github/ws_vins-fusion-ros2/:/ws_vins-fusion-ros2/
+      - /home/alien/docker_ws/github/ws_vins-fusion-ros2/:/ws_vins-fusion-ros2/
     command: /bin/bash -c "
-      source /opt/ros/humble/setup.bash && rqt"
+      source /opt/ros/foxy/setup.bash && rqt"
 
   vins-fusion:
-    image: vins-fusion-ros2:v31
+    image: "alienkh/vins-fusion-ros2:${VinsFusionRosTag:?error}"
     tty: true
-    network_mode: "host"
+    # network_mode: "host"
     depends_on:
       # - roscore
       - oak
       # - ublox
-    # networks:
-    #   mins:
-    #     ipv4_address: "10.20.10.6"
+    networks:
+      vins:
+        ipv4_address: "10.20.12.6"
     restart: unless-stopped
     environment:
       DISPLAY: ${DISPLAY}
@@ -119,17 +119,16 @@ services:
     volumes:
       - /tmp/.X11-unix/:/tmp/.X11-unix/ 
       - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
-      - /home/user/ws_docker/github/ws_vins-fusion-ros2/:/ws_vins-fusion-ros2/
+      - /home/alien/docker_ws/github/ws_vins-fusion-ros2/:/ws_vins-fusion-ros2/
     command: /bin/bash -c "
-      source /opt/ros/humble/setup.bash && cd /ws_mins/ && \
-      if [ ! -d '/ws_vins-fusion-ros2/install' ]; then \
-      colcon build; fi && source /ws_vins-fusion-ros2/install/setup.bash && \
-      ros2 run vins /ws_vins-fusion-ros2/src/VINS-Fusion-ROS2/config/oak-D/oak-D.yaml"
+      source /opt/ros/foxy/setup.bash && cd /ws_vins-fusion-ros2/ && \
+      colcon build && source /ws_vins-fusion-ros2/install/setup.bash && \
+      ros2 run vins vins_node /ws_vins-fusion-ros2/src/VINS-Fusion-ROS2/config/oak-s2/oak-s2.yaml "
 
 
-# networks:
-#   mins:
-#     ipam:
-#       driver: default
-#       config:
-#         - subnet: "10.20.10.0/24"
+networks:
+  vins:
+    ipam:
+      # driver: bridge
+      config:
+        - subnet: "10.20.12.0/24"
