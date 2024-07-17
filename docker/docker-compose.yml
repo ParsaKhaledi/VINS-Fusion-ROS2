@@ -31,8 +31,8 @@ services:
     command: /bin/bash -c "
       ros2 launch depthai_examples stereo_inertial_node.launch.py \
       enableRviz:=false stereo_fps:=30 syncNN:=false \
-      enableSpatialDetection:=false depth_aligned:=false \
-      /stereo_inertial_publisher/imu:=/imu/data_raw"
+      enableSpatialDetection:=false depth_aligned:=false #\
+      # /stereo_inertial_publisher/imu:=/imu/data_raw"
 
   # ublox:
   #   image: "ublox_ros1:v1"
@@ -58,7 +58,7 @@ services:
   #     roslaunch ublox_gps ublox_device.launch param_file_name:=m8u_rover node_name:=gps"
 
   rviz:
-    image: vins-fusion-ros2:v3
+    image: alienkh/vin-fusion-ros2:v3
     tty: true
     restart: unless-stopped
     network_mode: "host"
