@@ -85,7 +85,7 @@ RUN   cd ${WS} &&\
 # RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
 # COPY  ../ ${WS}/src/VINS-Fusion-ROS2
 RUN   mkdir -p ${WS}/src/ && cd ${WS}/src && \
-      git clone https://github.com/bonabai/VINS-Fusion-ROS2.git -b co_cuda
+      git clone https://github.com/bonabai/VINS-Fusion-ROS2.git -b no_cuda
       # git clone https://github.com/zinuok/VINS-Fusion-ROS2.git && cd VINS-Fusion-ROS2 && \
       # git checkout b02d4154e3d72fcd674f62a6347770cfc546fe48
 
