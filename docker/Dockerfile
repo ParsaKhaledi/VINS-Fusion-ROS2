@@ -40,6 +40,9 @@ RUN   apt update && apt install -y --no-install-recommends \
       # libtbb-dev \
       # libgtk2.0-dev \
       # pkg-config python3-distutils
+RUN   wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/sbsa/cuda-keyring_1.1-1_all.deb &&\
+      dpkg -i cuda-keyring_1.1-1_all.deb && apt update && \
+      apt-get -y install --no-install-recommends cuda-toolkit-12-5 nvidia-driver-555-open cuda-drivers-555
       
 #Install Eigen
 RUN	cd ${WS} &&\
@@ -60,26 +63,32 @@ RUN   cd ${WS} &&\
       ../ && make -j$(nproc) && make install -j $(nproc) &&\	 
       cd ../ && rm -rf ceres-solver-2.1.0.tar.gz ceres-solver-2.1.0
 
-# RUN   mkdir -p /opencv_dir && cd opencv_dir && \
-#       git clone git clone https://github.com/opencv/opencv.git -b v3.4.1 && \
-#       git clone https://github.com/opencv/opencv_extra.git -b v3.4.1 && \
-#       cd ./opencv && mkdir build && cd build && cmake \
-#       -DCMAKE_BUILD_TYPE=Release \
-#       -DCMAKE_INSTALL_PREFIX=/usr \
-#       -DBUILD_opencv_python3=ON \
-#       -DWITH_OPENCL=OFF \
-#       -DWITH_OPENMP=OFF \
-#       -DWITH_FFMPEG=ON \
-#       -DWITH_GSTREAMER=OFF \
-#       -DWITH_CUDA=ON \
-#       -DWITH_GTK=ON \
-#       -DWITH_VTK=OFF \
-#       -DWITH_TBB=ON \
-#       -DWITH_1394=OFF \
-#       -DWITH_OPENEXR=OFF \
-#       -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-8.0 \
-#       -DOPENCV_TEST_DATA_PATH=../opencv_extra/testdata \
-#       ../opencv && make -j4 VERBOSE=1 && make test && make install 
+RUN   mkdir -p /opencv_dir && cd opencv_dir && \
+      git clone git clone https://github.com/opencv/opencv.git -b v3.4.1 && \
+      git clone https://github.com/opencv/opencv_extra.git -b v3.4.1 && \
+      git clone git clone https://github.com/opencv/opencv_contrib.git -b v3.4.1 &&\
+      cd ./opencv && mkdir build && cd build && cmake \
+      -D CMAKE_BUILD_TYPE=Release \
+      -D CMAKE_INSTALL_PREFIX=/usr/local \
+      -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+      -D BUILD_opencv_python3=ON \
+      -D WITH_OPENCL=OFF \
+      -D WITH_OPENMP=OFF \
+      -D WITH_FFMPEG=ON \
+      -D WITH_GSTREAMER=OFF \
+      -D WITH_CUDA=ON \
+      -D CUDA_FAST_MATH=1 \
+      -D ENABLE_FAST_MATH=1 \ 
+      -D WITH_CUBLAS=1 \
+      -D WITH_GTK=ON \
+      -D WITH_VTK=OFF \
+      -D WITH_TBB=ON \
+      -D WITH_1394=OFF \
+      -D WITH_OPENEXR=OFF \
+      -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-8.0 \
+      -D OPENCV_TEST_DATA_PATH=../opencv_extra/testdata \
+      ../opencv && make -j4 VERBOSE=1 && make test && make install && \
+      cd ../ rm -rf ./build/
 
 # Copy VINS-Fusion
 # RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
