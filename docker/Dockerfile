@@ -85,8 +85,9 @@ RUN   cd ${WS} &&\
 # RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
 # COPY  ../ ${WS}/src/VINS-Fusion-ROS2
 RUN   mkdir -p ${WS}/src/
-RUN   cd ${WS}/src && git clone https://github.com/zinuok/VINS-Fusion-ROS2.git && cd VINS-Fusion-ROS2 && \
-      git checkout b02d4154e3d72fcd674f62a6347770cfc546fe48
+RUN   cd ${WS}/src && git clone https://github.com/JanekDev/VINS-Fusion-ROS2-humble.git
+      #  git clone https://github.com/zinuok/VINS-Fusion-ROS2.git && cd VINS-Fusion-ROS2 && \
+      # git checkout b02d4154e3d72fcd674f62a6347770cfc546fe48
 
 # Build VINS-Fusion
 RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --packages-skip loop_fusion
