@@ -42,7 +42,7 @@ RUN   apt update && apt install -y --no-install-recommends \
       # pkg-config python3-distutils
 RUN   wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/arm64/cuda-keyring_1.1-1_all.deb &&\
       dpkg -i cuda-keyring_1.1-1_all.deb && apt update && \
-      apt-get -y install --no-install-recommends cuda-toolkit-12-5 cuda-compat-12-5
+      apt-get -y install --no-install-recommends cuda-toolkit-12-5 
       
 #Install Eigen
 RUN	cd ${WS} &&\
