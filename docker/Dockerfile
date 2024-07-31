@@ -1,9 +1,9 @@
-FROM ros:foxy-ros-base
+FROM ros:humble-ros-base
 
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV ROS_DISTRO=foxy
+ENV ROS_DISTRO=humble
 ENV CERES_VERSION="2.1.0"
 ENV WS=/ws_vins-fusion-ros2
 ENV TERM xterm
@@ -84,13 +84,14 @@ RUN   cd ${WS} &&\
 # Copy VINS-Fusion
 # RUN   mkdir -p ${WS}/src/VINS-Fusion-ROS2
 # COPY  ../ ${WS}/src/VINS-Fusion-ROS2
-RUN   mkdir -p ${WS}/src/
-RUN   cd ${WS}/src && git clone https://github.com/JanekDev/VINS-Fusion-ROS2-humble.git
-      #  git clone https://github.com/zinuok/VINS-Fusion-ROS2.git && cd VINS-Fusion-ROS2 && \
+RUN   mkdir -p ${WS}/src/ && cd ${WS}/src && \
+      git clone https://github.com/bonabai/VINS-Fusion-ROS2.git
+      # git clone https://github.com/zinuok/VINS-Fusion-ROS2.git && cd VINS-Fusion-ROS2 && \
       # git checkout b02d4154e3d72fcd674f62a6347770cfc546fe48
 
 # Build VINS-Fusion
-RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --packages-skip loop_fusion
+# RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --packages-skip loop_fusion
+RUN   cd ${WS} && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build 
 
 RUN   echo "${WS}/install/setup.bash" >> ~/.bashrc &&\
       rm -rf /var/lib/apt/lists/*
