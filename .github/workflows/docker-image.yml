@@ -50,8 +50,8 @@ jobs:
           # push:   ${{ github.event_name != 'pull_request' }}
           push: true
           file: ./docker/Dockerfile
-      #     tags:   ${{ env.Registery }}/${{ env.ImageName }}:${{ env.ImageTag }}
-      #     # platforms: linux/amd64,linux/arm64
-      #     # username: ${{ secrets.DOCKER_USERNAME }}
-      #     # password: ${{ secrets.DOCKER_PASSWORD }}
-      #     # labels: ${{ steps.meta.outputs.labels }}
+          tags:   ${{ env.Registery }}/${{ env.ImageName }}:${{ env.ImageTag }}
+          platforms: linux/amd64,linux/arm64
+          # username: ${{ secrets.DOCKER_USERNAME }}
+          # password: ${{ secrets.DOCKER_PASSWORD }}
+          # labels: ${{ steps.meta.outputs.labels }}
