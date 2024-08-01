@@ -63,7 +63,7 @@ RUN   cd ${WS} &&\
       ../ && make -j$(nproc) && make install -j $(nproc) &&\	 
       cd ../ && rm -rf ceres-solver-2.1.0.tar.gz ceres-solver-2.1.0
 
-RUN   mkdir -p /opencv_dir && cd opencv_dir && \
+RUN   mkdir -p /opencv_dir && cd /opencv_dir && \
       git clone git clone https://github.com/opencv/opencv.git -b v3.4.1 && \
       git clone https://github.com/opencv/opencv_extra.git -b v3.4.1 && \
       git clone git clone https://github.com/opencv/opencv_contrib.git -b v3.4.1 &&\
