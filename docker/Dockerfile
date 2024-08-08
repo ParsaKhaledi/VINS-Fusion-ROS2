@@ -21,7 +21,7 @@ RUN   apt update && apt install -y --no-install-recommends \
       ros-${ROS_DISTRO}-rqt*            ros-${ROS_DISTRO}-rviz* \
 	ros-${ROS_DISTRO}-cv-bridge       ros-${ROS_DISTRO}-tf2 \
       ros-${ROS_DISTRO}-tf2-ros         ros-${ROS_DISTRO}-imu-tools     &&\
-      pip3 install numpy opencv-python==3.4.18.65 colcon-ros pytest==5.3
+      pip3 install numpy colcon-ros pytest==5.3 #opencv-python==3.4.18.65
       # libatlas-base-dev \
       # libeigen3-dev \
       # libgoogle-glog-dev \
@@ -87,7 +87,8 @@ RUN   mkdir -p /opencv_dir && cd /opencv_dir && \
       -D WITH_OPENEXR=OFF \
       -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-8.0 \
       -D OPENCV_TEST_DATA_PATH=../opencv_extra/testdata \
-      ../opencv && make -j4 VERBOSE=1 && make test && make install && \
+      ../opencv
+RUN   cd /opencv_dir/opencv/build && make -j4 VERBOSE=1 && make test && make install && \
       cd ../ rm -rf ./build/
 
 # Copy VINS-Fusion
